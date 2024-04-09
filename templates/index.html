@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Diff Tool</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('diff-form').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+
+                // Get the values of the textareas
+                var text1 = document.getElementById('text1').value;
+                var text2 = document.getElementById('text2').value;
+
+                // Make an AJAX request to the server
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/diff', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Update the diff-result div with the response
+                            document.getElementById('diff-result').innerHTML = xhr.responseText;
+                        } else {
+                            // Display an error message
+                            document.getElementById('diff-result').innerHTML = 'Error: ' + xhr.responseText;
+                        }
+                    }
+                };
+                xhr.send('text1=' + encodeURIComponent(text1) + '&text2=' + encodeURIComponent(text2));
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Online Diff Tool</h1>
+    <form id="diff-form">
+        <textarea id="text1" rows="10" cols="50" placeholder="Enter text 1"></textarea><br>
+        <textarea id="text2" rows="10" cols="50" placeholder="Enter text 2"></textarea><br>
+        <button type="submit">Compare</button>
+    </form>
+    <div id="diff-result"></div>
+</body>
+</html>
